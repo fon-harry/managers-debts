@@ -1,39 +1,36 @@
 const fs = require('fs');
 
-function randomInteger(min, max) {
-    let rand = min + Math.random() * (max + 1 - min);
-    rand = Math.floor(rand);
-    return rand;
-}
+const data = generate(10, 5, 10, 1, 5)
 
-let result = [];
-for (let managerIndex = 1; managerIndex <= 10; managerIndex++) {
-    for (let clientIndex = 1; clientIndex <= randomInteger(1, 9); clientIndex++) {
-
-        let managerDebts = {};
-        managerDebts.manager = 'Manager' + managerIndex;
-        managerDebts.client = 'Client' + clientIndex;
-
-        let contracts = [];
-        for (let contractIndex = 1; contractIndex <= randomInteger(1, 5); contractIndex++) {
-
-            contracts.push({
-                name: 'Contract' + contractIndex,
-                debt: +`${randomInteger(0, 9999)}.${randomInteger(0, 99)}`
-            });
-        }
-
-        managerDebts.contracts = contracts;
-
-        result.push(managerDebts);
-    }
-}
-
-fs.writeFile("data/data.json", JSON.stringify(result, null, 4), 'utf8', function (err) {
+fs.writeFile("data/data.json", JSON.stringify(data, null, 4), 'utf8', function (err) {
     if (err) {
         console.log("An error occured while writing JSON Object to File.");
         return console.log(err);
     }
  
     console.log("JSON file has been saved.");
-}); 
+});
+
+function getRandomInteger(min, max) {
+    let rand = min + Math.random() * (max + 1 - min);
+    rand = Math.floor(rand);
+    return rand;
+}
+
+function generate(managersCount, clientsMinCount, clientMaxCount, contactsMinCount, contractMaxCount) {
+    const result = [];
+    for(let managerIndex = 1; managerIndex <= managersCount; managerIndex++) {
+        const manager = {id: managerIndex, name: `Manager${managerIndex}`, clients: []};
+        for (let clientIndex = 1; clientIndex <= getRandomInteger(clientsMinCount, clientMaxCount); clientIndex++) {
+            const client = {id: clientIndex, name: `Client${clientIndex}`, contracts: []}
+            for (let contractIndex = 1; contractIndex <= getRandomInteger(contactsMinCount, contractMaxCount); contractIndex++) {
+                const contract = {id: contractIndex, name: `Contract${contractIndex}`, debt: `${getRandomInteger(0, 9999)}.${getRandomInteger(0, 99)}`}
+                client.contracts.push(contract);
+            }
+            manager.clients.push(client);
+        }
+        result.push(manager);
+    }
+
+    return result;
+}

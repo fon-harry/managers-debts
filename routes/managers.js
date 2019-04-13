@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/:managerName', function(req, res, next) {
     const managerName = req.params.managerName;
-    res.send(managersData.filter(item => item['manager'] === managerName));
+    res.send(managersData.find(item => item['name'] === managerName));
 });
 
 
