@@ -5,12 +5,17 @@ const managersData = require('../data/data.json');
 
 /* GET managers listing. */
 router.get('/', function(req, res, next) {
-    res.json(managersData);
+    const managersList = [];
+    managersData.forEach(({id, name}) => {
+        managersList.push({id, name, link: `managers/${name}`})
+    });
+    res.json(managersList);
 });
 
 router.get('/:managerName', function(req, res, next) {
     const managerName = req.params.managerName;
-    res.send(managersData.find(item => item['name'] === managerName));
+    managerData = managersData.find(item => item['name'] === managerName);
+    res.render('manager', managerData);
 });
 
 
