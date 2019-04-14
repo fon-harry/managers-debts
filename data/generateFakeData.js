@@ -1,15 +1,27 @@
 const fs = require('fs');
+const fetch = require('node-fetch');
 
 const data = generate(10, 5, 10, 1, 5)
 
-fs.writeFile("data/data.json", JSON.stringify(data, null, 4), 'utf8', function (err) {
-    if (err) {
-        console.log("An error occured while writing JSON Object to File.");
-        return console.log(err);
-    }
+
+fetch('http://127.0.0.1:3000', {
+        method: 'post',
+        body:    JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(err => console.error(err));
+
+// fs.writeFile("data/data.json", JSON.stringify(data, null, 4), 'utf8', function (err) {
+//     if (err) {
+//         console.log("An error occured while writing JSON Object to File.");
+//         return console.log(err);
+//     }
  
-    console.log("JSON file has been saved.");
-});
+//     console.log("JSON file has been saved.");
+// });
+
 
 function getRandomInteger(min, max) {
     let rand = min + Math.random() * (max + 1 - min);
