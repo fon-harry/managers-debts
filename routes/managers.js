@@ -5,22 +5,28 @@ const managersData = require('../data/data.json');
 
 
 router.get('/', function(req, res, next) {
-	res.redirect(`/managers/${managersData[0].name}`);
+	const managerId = parseInt(req.query.managerId);
+
+	const managersList = managersData.map(({id, name}) => ({id, name, link: `/managers?managerId=${id}`}))
+	const managerData = managersData.find(({id}) => id === managerId);
+
+	// res.send({managersList, managerData});
+	res.render('manager', {managersList, managerData});
 });
 
-router.get('/:managerName', function(req, res, next) {
-	const managerName = req.params.managerName;
-	managerData = managersData.find(item => item['name'] === managerName);
+// router.get('/:managerName', function(req, res, next) {
+// 	const managerName = req.params.managerName;
+// 	managerData = managersData.find(item => item['name'] === managerName);
 
-	const managersList = [];
-	managersData.forEach(({id, name}) => {
-		managersList.push({id, name, link: `/managers/${name}`})
-	});
+// 	const managersList = [];
+// 	managersData.forEach(({id, name}) => {
+// 		managersList.push({id, name, link: `/managers/${name}`})
+// 	});
 
-	managerData['managersList'] = managersList;
+// 	managerData['managersList'] = managersList;
 
-	res.render('manager', managerData);
-});
+// 	res.render('manager', managerData);
+// });
 
 
 module.exports = router;

@@ -2,29 +2,29 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Взаиморасчеты: <%= name %></title>
+	<title>Managers Debts: <%= managerData.name %></title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head>
 <body>
 	<div class="container mt-2">
 			<div class="row">
 				<div class="col-4">
 					<div class="list-group">
-						<% managersList.forEach((item) => {%>
+						<% managersList.forEach(({id, name, link}) => {%>
 							<a 
-								href=<%= item.link %>
-								<% if (item.name === name) { %>
+								href=<%= link %>
+								<% if (id === managerData.id) { %>
 										class="list-group-item list-group-item-action active"
 								<% } else { %> 
 										class="list-group-item list-group-item-action"
 								<% } %> 
 							> 
-								<%= item.name %> 
+								<%= name %> 
 							</a>
 						<% }) %>
 					</div>
 				</div>
 				<div class="col-8">
-					<h1><%= name %></h1>
+					<h1><%= managerData.name %></h1>
 					<table class="table table-bordered">
 						<thead>
 							<tr>
@@ -34,17 +34,17 @@
 							</tr>
 						</thead>
 						<tbody>
-							<% clients.forEach((client, index) => { %>
-									<% if (client.contracts.length === 1) {%>
+							<% managerData.clients.forEach(({name, contracts}, index) => { %>
+									<% if (contracts.length === 1) {%>
 										<tr>
-											<td><%= client.name %></td>
-											<td><%= client.contracts[0].name %></td>
-											<td><%= client.contracts[0].debt %></td>
+											<td><%= name %></td>
+											<td><%= contracts[0].name %></td>
+											<td><%= contracts[0].debt %></td>
 										</tr>    
 									<% } else { %>
 											<tr>
-											<td rowspan=<%= client.contracts.length %> ><%= client.name %></td>
-											<% client.contracts.forEach(({name, debt}, index) => { %>
+											<td rowspan=<%= contracts.length %> ><%= name %></td>
+											<% contracts.forEach(({name, debt}, index) => { %>
 												<% if (index !== 0) {%>
 													</tr>
 												<% } %>
