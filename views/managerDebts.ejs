@@ -1,0 +1,32 @@
+<h1><%= managerData.name %></h1>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th scope="col">Client</th>
+			<th scope="col">Contract</th>
+			<th scope="col">Debt</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% managerData.clients.forEach(({name, contracts}, index) => { %>
+				<% if (contracts.length === 1) {%>
+					<tr>
+						<td><%= name %></td>
+						<td><%= contracts[0].name %></td>
+						<td><%= contracts[0].debt %></td>
+					</tr>    
+				<% } else { %>
+						<tr>
+						<td rowspan=<%= contracts.length %> ><%= name %></td>
+						<% contracts.forEach(({name, debt}, index) => { %>
+							<% if (index !== 0) {%>
+								</tr>
+							<% } %>
+								<td><%= name %></td>
+								<td><%= debt %></td>
+							</tr>
+						<% }) %>
+				<% } %>
+		<% }) %>
+	</tbody>
+</table>
