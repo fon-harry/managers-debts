@@ -30,9 +30,9 @@ function getRandomInteger(min, max) {
 }
 
 function generate(managersCount, clientsMinCount, clientMaxCount, contactsMinCount, contractMaxCount) {
-	const result = [];
+	const managersDebts = [];
 	for(let managerIndex = 1; managerIndex <= managersCount; managerIndex++) {
-		const manager = {id: managerIndex, name: `Manager${managerIndex}`, clients: []};
+		const manager = {id: managerIndex.toString(), name: `Manager${managerIndex}`, clients: []};
 		for (let clientIndex = 1; clientIndex <= getRandomInteger(clientsMinCount, clientMaxCount); clientIndex++) {
 			const client = {id: clientIndex, name: `Client${clientIndex}`, contracts: []}
 			for (let contractIndex = 1; contractIndex <= getRandomInteger(contactsMinCount, contractMaxCount); contractIndex++) {
@@ -41,8 +41,10 @@ function generate(managersCount, clientsMinCount, clientMaxCount, contactsMinCou
 			}
 			manager.clients.push(client);
 		}
-		result.push(manager);
+		managersDebts.push(manager);
 	}
 
-	return result;
+	const users = [];
+
+	return {users, managersDebts};
 }

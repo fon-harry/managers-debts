@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const managersData = require('../data/data.json');
+const managersData = require('../data/data.json').managersDebts;
 
 
 router.get('/', function(req, res, next) {
@@ -11,6 +11,9 @@ router.get('/', function(req, res, next) {
 
 	const managersList = managersData.map(({id, name}) => ({id, name, link: `/manager?id=${id}`}))
 	const managerData = managersData.find(({id}) => id === managerId);
+
+	console.log(managerData);
+
 
 	res.render('manager', {managersList, managerData});
 });

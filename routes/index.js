@@ -5,7 +5,7 @@ const fs = require('fs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.redirect('/managers');
+  res.redirect('/manager');
 });
 
 router.post('/', function(req, res, next) {
