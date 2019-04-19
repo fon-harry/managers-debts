@@ -5,14 +5,13 @@ const managersData = require('../data/data.json');
 
 
 router.get('/', function(req, res, next) {
-	const managerId = req.query.managerId;
+	const managerId = req.query.id;
 
-	if (!managerId) res.redirect(`/managers?managerId=${managersData[0]['id']}`);
+	if (!managerId) res.redirect(`/manager?id=${managersData[0]['id']}`);
 
-	const managersList = managersData.map(({id, name}) => ({id, name, link: `/managers?managerId=${id}`}))
+	const managersList = managersData.map(({id, name}) => ({id, name, link: `/manager?id=${id}`}))
 	const managerData = managersData.find(({id}) => id === managerId);
 
-	// res.send({managersList, managerData});
 	res.render('manager', {managersList, managerData});
 });
 
