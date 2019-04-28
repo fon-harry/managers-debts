@@ -3,6 +3,25 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const session = require("express-session");
+const KnexSessionStore = require("connect-session-knex")(session);
+const Knex = require("knex");
+
+const knex = Knex({
+  client: "mysql2",
+  connection: {
+    host: "127.0.0.1",
+    user: "managers_debts",
+    password: "managers_debts",
+    database: "managers_debts"
+  }
+});
+
+const store = new KnexSessionStore({
+  knex: knex,
+  tablename: "sessions" // optional. Defaults to 'sessions',
+  // createtable: false
+});
 
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
@@ -22,6 +41,20 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
   "/bootstrap",
   express.static(__dirname + "/node_modules/bootstrap/dist")
+);
+
+app.use(
+  session({
+    secret: "keyboard cat",
+    cookie: {
+      path: "/",
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000
+    },
+    resave: false,
+    saveUninitialized: true,
+    store: store
+  })
 );
 
 app.use("/", indexRouter);
