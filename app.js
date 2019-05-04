@@ -5,17 +5,10 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const session = require("express-session");
 const KnexSessionStore = require("connect-session-knex")(session);
-const Knex = require("knex");
 
-const knex = Knex({
-  client: "mysql2",
-  connection: {
-    host: "127.0.0.1",
-    user: "managers_debts",
-    password: "managers_debts",
-    database: "managers_debts"
-  }
-});
+const environment = process.env.NODE_ENV || "development";
+const configuration = require("./knexfile")[environment];
+const knex = require("knex")(configuration);
 
 const store = new KnexSessionStore({
   knex: knex,
