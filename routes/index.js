@@ -5,8 +5,6 @@ const environment = process.env.NODE_ENV || "development";
 const configuration = require("../knexfile")[environment];
 const knex = require("knex")(configuration);
 
-const fs = require("fs");
-
 /* GET home page. */
 router.get("/", function(req, res, next) {
   res.redirect("/manager");

@@ -1,4 +1,4 @@
-<%- include('header', {title: `Managers Debts: ${managerData.name}`}) -%>
+<%- include('header', {title: `Managers Debts: ${managerData.managerName}`}) -%>
 
 	<div class="container mt-2">
 			<div class="row">
@@ -6,7 +6,7 @@
 					<%- include('managersList') -%>
 				</div>
 				<div class="col-8">
-					<%- include('managerDebts', {managerData}) %>
+					<%- include('managerDebts') %>
 				</div>
 			</div>
 

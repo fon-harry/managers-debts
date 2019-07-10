@@ -8,21 +8,21 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% managerData.clients.forEach(({name, contracts}, index) => { %>
+		<% managerData.clients.forEach(({clientName, contracts}, index) => { %>
 				<% if (contracts.length === 1) {%>
 					<tr>
-						<td><%= name %></td>
-						<td><%= contracts[0].name %></td>
+						<td><%= clientName %></td>
+						<td><%= contracts[0].contractName %></td>
 						<td><%= contracts[0].debt %></td>
 					</tr>    
 				<% } else { %>
 						<tr>
-						<td rowspan=<%= contracts.length %> ><%= name %></td>
-						<% contracts.forEach(({name, debt}, index) => { %>
+						<td rowspan=<%= contracts.length %> ><%= clientName %></td>
+						<% contracts.forEach(({contractName, debt}, index) => { %>
 							<% if (index !== 0) {%>
 								</tr>
 							<% } %>
-								<td><%= name %></td>
+								<td><%= contractName %></td>
 								<td><%= debt %></td>
 							</tr>
 						<% }) %>

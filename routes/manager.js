@@ -1,37 +1,91 @@
 const express = require("express");
 const router = express.Router();
 
-const managersData = require("../data/data.json").managersDebts;
+const environment = process.env.NODE_ENV || "development";
+const configuration = require("../knexfile")[environment];
+const knex = require("knex")(configuration);
 
-router.get("/", function(req, res, next) {
-  const managerId = req.query.id;
+router.get("/", async function(req, res, next) {
+  let managerId = req.query.id;
 
-  if (!managerId) res.redirect(`/manager?id=${managersData[0]["id"]}`);
+  if (!managerId) {
+    const firstManagerId = await knex
+      .select("id")
+      .from("managers")
+      .orderBy("name")
+      .limit(1);
+    managerId = firstManagerId[0].id;
+    res.redirect(`/manager?id=${managerId}`);
+  }
 
-  const managersList = managersData.map(({ id, name }) => ({
-    id,
-    name,
-    link: `/manager?id=${id}`
-  }));
-  const managerData = managersData.find(({ id }) => id === managerId);
+  managerId = Number(managerId);
 
-  console.log(managerData);
+  const getManagerName = async () => {
+    const tmp = await knex
+      .select("name")
+      .from("managers")
+      .where("id", managerId);
+
+    return tmp[0].name;
+  };
+
+  const managerName = await getManagerName();
+
+  const managersList = await knex
+    .select("id", "name")
+    .from("managers")
+    .orderBy("name")
+    .map(({ id, name }) => ({ id, name, link: `/manager?id=${id}` }));
+
+  let managerData = await knex
+    .select({
+      clientId: "clients.id",
+      client: "clients.name",
+      contractId: "contracts.id",
+      contract: "contracts.name",
+      debt: "contracts.debt"
+    })
+    .from("clients")
+    .orderBy("client", "clientId", "contract")
+    .where("manager_id", managerId)
+    .rightJoin("contracts", "clients.id", "contracts.client_id")
+    .reduce((accum, element) => {
+      const findedClient = accum.find(
+        item => item.clientId === element.clientId
+      );
+
+      if (findedClient !== undefined) {
+        findedClient.contracts.push({
+          contractId: element.contractId,
+          contractName: element.contract,
+          debt: element.debt
+        });
+        return accum;
+      }
+
+      return [
+        ...accum,
+        {
+          clientId: element.clientId,
+          clientName: element.client,
+          contracts: [
+            {
+              contractId: element.contractId,
+              contractName: element.contract,
+              debt: element.debt
+            }
+          ]
+        }
+      ];
+    }, []);
+
+  managerData = {
+    managerId,
+    managerName,
+    clients: managerData
+  };
 
   res.render("manager", { managersList, managerData });
 });
-
-// router.get('/:managerName', function(req, res, next) {
-// 	const managerName = req.params.managerName;
-// 	managerData = managersData.find(item => item['name'] === managerName);
-
-// 	const managersList = [];
-// 	managersData.forEach(({id, name}) => {
-// 		managersList.push({id, name, link: `/managers/${name}`})
-// 	});
-
-// 	managerData['managersList'] = managersList;
-
-// 	res.render('manager', managerData);
-// });
 
 module.exports = router;
