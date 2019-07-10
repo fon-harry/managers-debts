@@ -12,24 +12,16 @@ router.get("/", function(req, res, next) {
   res.redirect("/manager");
 });
 
-router.get("/del", function(req, res, next) {
-  console.log("del");
-  knex("contracts")
-    .del()
-    .then(() => {
-      return knex("clients")
-        .del()
-        .then(() => {
-          knex("managers")
-            .del()
-            .then(() => {
-              res.send("del");
-            });
-        });
-    })
-    .catch(err => {
-      return err;
-    });
+router.get("/del", async function(req, res, next) {
+  try {
+    await knex("contracts").del();
+    await knex("clients").del();
+    await knex("managers").del();
+
+    res.send("deleted");
+  } catch (error) {
+    return error;
+  }
 });
 
 router.post("/", function(req, res, next) {
