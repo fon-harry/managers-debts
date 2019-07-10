@@ -12,6 +12,26 @@ router.get("/", function(req, res, next) {
   res.redirect("/manager");
 });
 
+router.get("/del", function(req, res, next) {
+  console.log("del");
+  knex("contracts")
+    .del()
+    .then(() => {
+      return knex("clients")
+        .del()
+        .then(() => {
+          knex("managers")
+            .del()
+            .then(() => {
+              res.send("del");
+            });
+        });
+    })
+    .catch(err => {
+      return err;
+    });
+});
+
 router.post("/", function(req, res, next) {
   const data = req.body;
 
