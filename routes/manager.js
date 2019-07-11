@@ -16,6 +16,7 @@ router.get("/", async function(req, res, next) {
       .limit(1);
     managerId = firstManagerId[0].id;
     res.redirect(`/manager?id=${managerId}`);
+    return;
   }
 
   managerId = Number(managerId);
