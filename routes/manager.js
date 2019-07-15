@@ -9,12 +9,12 @@ router.get("/", async function(req, res, next) {
   let managerId = req.query.id;
 
   if (!managerId) {
-    const firstManagerId = await knex
+    managerId = await knex
       .select("id")
       .from("managers")
       .orderBy("name")
-      .limit(1);
-    managerId = firstManagerId[0].id;
+      .first()
+      .then(row => row.id);
     res.redirect(`/manager?id=${managerId}`);
     return;
   }
