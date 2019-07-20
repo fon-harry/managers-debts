@@ -13,9 +13,16 @@ router.get("/", function(req, res, next) {
 router.post("/", async function(req, res, next) {
   const data = req.body;
   try {
+    // removing data
+    await knex("userManagers").del();
+
     await knex("contracts").del();
     await knex("clients").del();
     await knex("managers").del();
+
+    await knex("users").del();
+
+    // inserting managers debts data
     await Promise.all(
       data.managersDebts.map(({ id: id_8, name, clients }) => {
         return knex("managers")
@@ -41,6 +48,40 @@ router.post("/", async function(req, res, next) {
             );
           });
       })
+    );
+
+    // inserting data about users
+
+    await Promise.all(
+      data.users.map(
+        ({
+          username,
+          password,
+          isAdmin = false,
+          isSupervisor = false,
+          managers = []
+        }) => {
+          return knex("users")
+            .insert({ username, password, isAdmin, isSupervisor })
+            .then(user_id => {
+              return Promise.all(
+                managers.map(({ id: manager_id }) => {
+                  return knex("managers")
+                    .select("id")
+                    .first()
+                    .where("id_8", manager_id)
+                    .then(manager => manager.id)
+                    .then(manager_id =>
+                      knex("userManagers").insert({
+                        user_id,
+                        manager_id
+                      })
+                    );
+                })
+              );
+            });
+        }
+      )
     );
 
     res.send("JSON file has been saved to database.");

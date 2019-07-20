@@ -68,7 +68,21 @@ function generate(
     managersDebts.push(manager);
   }
 
-  const users = [];
+  const users = [
+    { username: "fon_harry", password: "qwerty", isAdmin: true, managers: [] },
+    {
+      username: "vasya",
+      password: "1234",
+      isSupervisor: true,
+      managers: [{ id: 1 }, { id: 2 }, { id: 3 }]
+    },
+    {
+      username: "petya",
+      password: "4321",
+      isSupervisor: true,
+      managers: [{ id: 2 }, { id: 4 }, { id: 6 }, { id: 8 }]
+    }
+  ];
 
   return { users, managersDebts };
 }
